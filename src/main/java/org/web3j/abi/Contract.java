@@ -98,20 +98,20 @@ public abstract class Contract extends ManagedTransaction {
      * Given the duration required to execute a transaction, asyncronous execution is strongly
      * recommended via {@link Contract#executeTransactionAsync}.
      *
-     * @param data to send in transaction
+     * @param data  to send in transaction
      * @param value in Wei to send in transaction
      * @return {@link Optional} containing our transaction receipt
-     * @throws ExecutionException if the computation threw an
-     * exception
-     * @throws InterruptedException if the current thread was interrupted
-     * while waiting
+     * @throws ExecutionException          if the computation threw an
+     *                                     exception
+     * @throws InterruptedException        if the current thread was interrupted
+     *                                     while waiting
      * @throws TransactionTimeoutException if the transaction was not mined while waiting
      */
     protected TransactionReceipt executeTransaction(
             String data, BigInteger value)
             throws ExecutionException, InterruptedException, TransactionTimeoutException {
 
-        BigInteger nonce = getNonce(credentials.getAddress());
+        BigInteger nonce = web3j.getNonceManager().getNonce(credentials.getAddress());
 
         RawTransaction rawTransaction = RawTransaction.createTransaction(
                 nonce,
@@ -142,7 +142,7 @@ public abstract class Contract extends ManagedTransaction {
         List<Type> indexedValues = new ArrayList<>();
         List<Type> nonIndexedValues = new ArrayList<>();
 
-        for (Log log:logs) {
+        for (Log log : logs) {
             List<String> topics = log.getTopics();
             String encodedEventSignature = EventEncoder.encode(event);
             if (topics.get(0).equals(encodedEventSignature)) {
@@ -153,7 +153,7 @@ public abstract class Contract extends ManagedTransaction {
                 List<TypeReference<Type>> indexedParameters = event.getIndexedParameters();
                 for (int i = 0; i < indexedParameters.size(); i++) {
                     Type value = FunctionReturnDecoder.decodeIndexedValue(
-                            topics.get(i+1), indexedParameters.get(i));
+                            topics.get(i + 1), indexedParameters.get(i));
                     indexedValues.add(value);
                 }
             }

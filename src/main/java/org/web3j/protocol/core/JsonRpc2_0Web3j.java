@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 
+import org.web3j.protocol.nonce.BasicNonceManager;
+import org.web3j.protocol.nonce.NonceManager;
 import rx.Observable;
 
 import org.web3j.protocol.Web3jService;
@@ -30,9 +32,11 @@ public class JsonRpc2_0Web3j implements Web3j {
     protected final Web3jService web3jService;
     private final JsonRpc2_0Rx web3jRx;
     private final long blockTime;
+    private NonceManager nonceManager;
 
     public JsonRpc2_0Web3j(Web3jService web3jService) {
         this(web3jService, BLOCK_TIME, Async.defaultExecutorService());
+        nonceManager = new BasicNonceManager(this);
     }
 
     public JsonRpc2_0Web3j(
@@ -714,18 +718,28 @@ public class JsonRpc2_0Web3j implements Web3j {
 
     @Override
     public Observable<org.web3j.protocol.core.methods.response.Transaction>
-            transactionObservable() {
+    transactionObservable() {
         return web3jRx.transactionObservable(blockTime);
     }
 
     @Override
     public Observable<org.web3j.protocol.core.methods.response.Transaction>
-            pendingTransactionObservable() {
+    pendingTransactionObservable() {
         return web3jRx.pendingTransactionObservable(blockTime);
     }
 
     @Override
     public Observable<EthBlock> blockObservable(boolean fullTransactionObjects) {
         return web3jRx.blockObservable(fullTransactionObjects, blockTime);
+    }
+
+    @Override
+    public void setNonceManager(NonceManager manager) {
+        nonceManager = manager;
+    }
+
+    @Override
+    public NonceManager getNonceManager() {
+        return nonceManager;
     }
 }

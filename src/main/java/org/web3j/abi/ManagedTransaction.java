@@ -85,13 +85,6 @@ public abstract class ManagedTransaction {
         return waitForTransactionReceipt(transactionHash);
     }
 
-    protected BigInteger getNonce(String address) throws InterruptedException, ExecutionException {
-        EthGetTransactionCount ethGetTransactionCount = web3j.ethGetTransactionCount(
-                address, DefaultBlockParameterName.LATEST).sendAsync().get();
-
-        return ethGetTransactionCount.getTransactionCount();
-    }
-
     protected BigInteger getGasPrice() throws InterruptedException, ExecutionException {
         EthGasPrice ethGasPrice = web3j.ethGasPrice().sendAsync().get();
 
@@ -121,7 +114,7 @@ public abstract class ManagedTransaction {
         }
 
         throw new TransactionTimeoutException("Transaction receipt was not generated after " +
-                        ((sleepDuration * attempts) / 1000 +
+                ((sleepDuration * attempts) / 1000 +
                         " seconds for transaction: " + transactionHash));
     }
 

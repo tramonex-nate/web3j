@@ -3,6 +3,7 @@ package org.web3j.protocol;
 import java.util.concurrent.ExecutorService;
 
 import org.web3j.protocol.core.Ethereum;
+import org.web3j.protocol.nonce.NonceManager;
 import org.web3j.protocol.rx.Web3jRx;
 import org.web3j.protocol.core.JsonRpc2_0Web3j;
 
@@ -18,4 +19,9 @@ public interface Web3j extends Ethereum, Web3jRx {
             Web3jService web3jService, long pollingInterval, ExecutorService executorService) {
         return new JsonRpc2_0Web3j(web3jService, pollingInterval, executorService);
     }
+
+    void setNonceManager(NonceManager manager);
+
+    NonceManager getNonceManager();
+
 }

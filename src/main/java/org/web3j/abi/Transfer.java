@@ -35,14 +35,13 @@ public class Transfer extends ManagedTransaction {
      * recommended via {@link Transfer#sendFundsAsync(String, BigDecimal, Convert.Unit)}.
      *
      * @param toAddress destination address
-     * @param value amount to send
-     * @param unit of specified send
-     *
+     * @param value     amount to send
+     * @param unit      of specified send
      * @return {@link Optional} containing our transaction receipt
-     * @throws ExecutionException if the computation threw an
-     * exception
-     * @throws InterruptedException if the current thread was interrupted
-     * while waiting
+     * @throws ExecutionException          if the computation threw an
+     *                                     exception
+     * @throws InterruptedException        if the current thread was interrupted
+     *                                     while waiting
      * @throws TransactionTimeoutException if the transaction was not mined while waiting
      */
     private TransactionReceipt send(
@@ -58,7 +57,7 @@ public class Transfer extends ManagedTransaction {
                             " = " + weiValue + " Wei");
         }
 
-        BigInteger nonce = getNonce(credentials.getAddress());
+        BigInteger nonce = web3j.getNonceManager().getNonce(credentials.getAddress());
         BigInteger gasPrice = getGasPrice();
 
         RawTransaction rawTransaction = RawTransaction.createEtherTransaction(
@@ -76,9 +75,8 @@ public class Transfer extends ManagedTransaction {
      * fund transfers. For multiple, create an instance.
      *
      * @param toAddress destination address
-     * @param value amount to send
-     * @param unit of specified send
-     *
+     * @param value     amount to send
+     * @param unit      of specified send
      * @return {@link Future} containing executing transaction
      */
     public Future<TransactionReceipt> sendFundsAsync(

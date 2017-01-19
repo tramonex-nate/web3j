@@ -10,7 +10,11 @@ import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthGetTransactionReceipt;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.nonce.NonceManager;
 import org.web3j.utils.Async;
+
+import java.math.BigInteger;
+import java.util.concurrent.ExecutionException;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -37,12 +41,15 @@ public abstract class ManagedTransactionTester {
     void prepareNonceRequest() {
         EthGetTransactionCount ethGetTransactionCount = new EthGetTransactionCount();
         ethGetTransactionCount.setResult("0x1");
+        NonceManager manager = mock(NonceManager.class);
 
-        Request transactionCountRequest = mock(Request.class);
-        when(transactionCountRequest.sendAsync())
-                .thenReturn(Async.run(() -> ethGetTransactionCount));
-        when(web3j.ethGetTransactionCount(SampleKeys.ADDRESS, DefaultBlockParameterName.LATEST))
-                .thenReturn(transactionCountRequest);
+        when(web3j.getNonceManager()).thenReturn(manager);
+
+        try {
+            when(manager.getNonce(SampleKeys.ADDRESS)).thenReturn(BigInteger.ONE);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
     }
 
     void prepareTransactionRequest() {
