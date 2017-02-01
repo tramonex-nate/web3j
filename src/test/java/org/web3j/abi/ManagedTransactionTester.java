@@ -39,8 +39,6 @@ public abstract class ManagedTransactionTester {
     }
 
     void prepareNonceRequest() {
-        EthGetTransactionCount ethGetTransactionCount = new EthGetTransactionCount();
-        ethGetTransactionCount.setResult("0x1");
         NonceManager manager = mock(NonceManager.class);
 
         when(web3j.getNonceManager()).thenReturn(manager);
